@@ -176,9 +176,10 @@ A collection of values, that you can change (directly inside of the file or with
 #### Variables
 ```javascript
 TreeConfig.leaf_icon                 // The icon for a leaf-node (default: TreeUtil.default_leaf_icon)
-TreeUtil.parent_icon                 // The icon for a normal node (default: TreeUtil.default_parent_icon)
-TreeUtil.open_icon                   // The expanded-icon (default: TreeUtil.default_open_icon)
-TreeUtil.close_icon                  // The collapsed-icon (default: TreeUtil.default_close_icon)
+TreeConfig.parent_icon               // The icon for a normal node (default: TreeUtil.default_parent_icon)
+TreeConfig.open_icon                 // The expanded-icon (default: TreeUtil.default_open_icon)
+TreeConfig.close_icon                // The collapsed-icon (default: TreeUtil.default_close_icon)
+TreeConfig.context_menu              // A function that is executed when a contextmenu is opened (default: undefined)
 ```
 ### Options
 
