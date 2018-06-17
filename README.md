@@ -1,37 +1,37 @@
-## Welcome to GitHub Pages
+# TreeJS
 
-You can use the [editor on GitHub](https://github.com/m-thalmann/treejs/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+TreeJS is a simple JavaScript librarie, to display a TreeView like in the windows filebrowser.
+It implements partially the Java Swing TreeModel etc.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Installation
+1. Download the .zip-File and put it in your project-folder.
+2. Add this script-tag to the head of the file
+```html
+<script src="path/to/js/file.js"></script>
+```
+3. Add this link-tag to the head of the file, to include the styles
+```html
+<link rel="stylesheet" href="path/to/css/file.css" />
+```
+4. Start using the librarie!
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+## Usage
+### Create new TreeView
+```javascript
+var root = new TreeNode("root"); // Create the root-node
+var tree = new TreeView(root);   // Create the tree
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Set a container to display the tree
+```javascript
+tree.setContainer("#container"); // Uses document.querySelector, but you can also just put in a DOM-Element
+```
+or
+```javascript
+tree.setContainer(document.getElementById("container"));
+```
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/m-thalmann/treejs/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+### Load the tree
+```javascript
+tree.reload(); // Always use this, when you change the TreeView or any of its nodes
+```
