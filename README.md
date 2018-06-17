@@ -3,6 +3,18 @@
 TreeJS is a simple JavaScript librarie, to display a TreeView like in the windows filebrowser.
 It implements partially the Java Swing TreeModel etc.
 
+## Navigation
+- [Installation](#installation)
+- [Usage](#usage)
+- [Documentation](#documentation)
+  - [TreeView](#treeview)
+  - [TreeNode](#treenode)
+  - [TreePath](#treepath)
+  - [TreeUtil](#treeutil)
+  - [TreeConfig](#treeconfig)
+  - [Options](#options)
+- [Examples](#examples)
+
 ## Installation
 1. Download the .zip-File and put it in your project-folder.
 2. Add this script-tag to the head of the file
@@ -168,3 +180,6 @@ TreeUtil.parent_icon                 // The icon for a normal node (default: Tre
 TreeUtil.open_icon                   // The expanded-icon (default: TreeUtil.default_open_icon)
 TreeUtil.close_icon                  // The collapsed-icon (default: TreeUtil.default_close_icon)
 ```
+### Options
+
+## Examples
