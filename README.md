@@ -183,6 +183,9 @@ TreeConfig.open_icon                 // The expanded-icon (default: TreeUtil.def
 TreeConfig.close_icon                // The collapsed-icon (default: TreeUtil.default_close_icon)
 TreeConfig.context_menu              // A function that is executed when a contextmenu is opened (default: undefined)
 ```
+
+### Events
+
 ### Options
 
 ## Examples
