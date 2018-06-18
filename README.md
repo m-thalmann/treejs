@@ -3,7 +3,7 @@
 TreeJS is a simple JavaScript library, to display a TreeView like in the windows filebrowser.
 It implements partially the Java Swing TreeModel etc.
 
-Demo: https://m-thalmann.github.io/treejs/
+Demo: https://m-thalmann.github.io/treejs/demo/
 
 ## Navigation
 - [Installation](#installation)
@@ -16,7 +16,7 @@ Demo: https://m-thalmann.github.io/treejs/
   - [TreeConfig](#treeconfig)
   - [Events](#events)
   - [Options](#options)
-- [Examples](#examples)
+- [Example](#example)
 
 ## Installation
 1. Download the .zip-File and put it in your project-folder.
@@ -223,4 +223,36 @@ It is possible to attach a event to a TreeNode: ``node.on(event, callback);``
 | icon | [string] | Sets the icon for this node to the string |
 | allowsChildren | true/false | Sets if there can be added new children to this node |
 
-## Examples
+## Example
+### Code:
+```javascript
+var root = new TreeNode("root");
+			var n1 = new TreeNode("1");
+				var n11 = new TreeNode("1.1");
+			var n2 = new TreeNode("2");
+			var n3 = new TreeNode("3");
+				var n31 = new TreeNode("3.1");
+				var n32 = new TreeNode("3.2");
+					var n321 = new TreeNode("3.2.1");
+				var n33 = new TreeNode("3.3");
+        
+root.addChild(n1);
+root.addChild(n2);
+root.addChild(n3);
+
+n1.addChild(n11);
+
+n3.addChild(n31);
+n3.addChild(n32);
+n3.addChild(n33);
+
+n32.addChild(n321);
+
+n3.setEnabled(false);
+
+var view = new TreeView(root, "#container");
+```
+
+### Output:
+
+![treeJs example](demo/example.jpg)
