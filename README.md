@@ -185,6 +185,22 @@ TreeConfig.context_menu              // A function that is executed when a conte
 ```
 
 ### Events
+It is possible to attach a event to a TreeNode: ``node.on(event, callback);``
+
+| Event | Callback-Parameter(s) | Definition | Restriction |
+|-----------------|--------------------------------------|--------------------------------------------------------------------------|---------------|
+| click | e[click_event], node[TreeNode] | Is triggered when the node is clicked | - |
+| expand | node[TreeNode] | Is triggered when the node is expanded | Not-leaf only |
+| collapse | node[TreeNode] | Is triggered when the node is collapsed | Not-leaf only |
+| toggle_expanded | node[TreeNode] | Is triggered when the node is either expanded or collapsed | Not-leaf only |
+| open | node[TreeNode] | Is triggered when the open()-Function is executed or the leaf is clicked | Leaf only |
+| enable | node[TreeNode] | Is triggered when the node is enabled | - |
+| disable | node[TreeNode] | Is triggered when the node is disabled | - |
+| toggle_enabled | node[TreeNode] | Is triggered when the node is either enabled or disabled | - |
+| select | node[TreeNode] | Is triggered when the node is selected | - |
+| deselect | node[TreeNode] | Is triggered when the node is deselected | - |
+| toggle_selected | node[TreeNode] | Is triggered when the node is either selected or deselected | - |
+| contextmenu | e[contextmenu_event], node[TreeNode] | Is triggered when a contextmenu is opened on a node | - |
 
 ### Options
 
