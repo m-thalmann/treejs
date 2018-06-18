@@ -1,7 +1,9 @@
 # TreeJS
 
-TreeJS is a simple JavaScript librarie, to display a TreeView like in the windows filebrowser.
+TreeJS is a simple JavaScript library, to display a TreeView like in the windows filebrowser.
 It implements partially the Java Swing TreeModel etc.
+
+Demo: https://m-thalmann.github.io/treejs/
 
 ## Navigation
 - [Installation](#installation)
@@ -25,7 +27,7 @@ It implements partially the Java Swing TreeModel etc.
 ```html
 <link rel="stylesheet" href="path/to/css/file.css" />
 ```
-4. Start using the librarie!
+4. Start using the library!
 
 ## Usage
 ### Create new TreeView
@@ -88,7 +90,7 @@ new TreeNode(userobject, options);
 ```
 
 - **userobject** (object): This object is used to display text on the node (if not string, toString() is used) **(optional)**
-- **options** (object): A object with options for the node (see below) **(optional)**
+- **options** (object): A object with options for the node (see [below](#options)) **(optional)**
 
 #### Methods
 ```javascript
