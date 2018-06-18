@@ -138,13 +138,14 @@ function TreeView(root, container, options){
 		span_desc.className = "tj_description";
 		span_desc.tj_node = node;
 
-		if(node.isSelected()){
-			span_desc.classList.add("selected");
-		}
-
 		if(!node.isEnabled()){
 			li_outer.setAttribute("disabled", "");
 			node.setExpanded(false);
+			node.setSelected(false);
+		}
+		
+		if(node.isSelected()){
+			span_desc.classList.add("selected");
 		}
 
 		span_desc.addEventListener("click", function(e){

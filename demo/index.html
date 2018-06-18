@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>TreeJS - Demo Page</title>
+
+	<script src="../tree.js"></script>
+	<link rel="stylesheet" href="../treejs.css" id="treejs_styles">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+	<script>
+		function changeIcons(fa_icons){
+			if(fa_icons){
+				view.changeOption("leaf_icon", '<i class="fas fa-file"></i>');
+				view.changeOption("parent_icon", '<i class="fas fa-folder"></i>');
+
+				TreeConfig.open_icon = '<i class="fas fa-angle-down"></i>';
+				TreeConfig.close_icon = '<i class="fas fa-angle-right"></i>';
+			}else{
+				view.changeOption("leaf_icon", undefined);
+				view.changeOption("parent_icon", undefined);
+
+				TreeConfig.open_icon = TreeUtil.default_open_icon;
+				TreeConfig.close_icon = TreeUtil.default_close_icon;
+			}
+
+			view.reload();
+		}
+
+		function toggleCustomIcon(n){
+			if(n == true){
+				root.changeOption("icon", '<i class="fas fa-code-branch"></i>');
+			}else{
+				root.changeOption("icon", undefined);
+			}
+
+			view.reload();
+		}
+	</script>
+
+	<style media="screen">
+		*{
+			box-sizing: border-box;
+			position: relative;
+		}
+
+		body{
+			padding: 0;
+			margin: 0;
+			font-family: sans-serif;
+		}
+
+		header h1{
+			margin: 1em;
+			display: block;
+			text-align: center;
+			font-size: 3rem;
+			color: #fff;
+		}
+
+		header{
+			padding: 5px;
+			margin-bottom: 1em;
+
+			background-color: #159957;
+			background-image: -webkit-linear-gradient(30deg, #155799, #159957);
+			background-image: -o-linear-gradient(30deg, #155799, #159957);
+			background-image: linear-gradient(120deg, #155799, #159957);
+		}
+
+		main{
+			margin: 0 1em;
+			text-align: center;
+		}
+
+		#container{
+			width: 200px;
+			border: 1px solid #ccc;
+			margin: 0 auto;
+			margin-bottom: 1em;
+		}
+
+		.btn{
+			display: inline-block;
+			color: #fff;
+			padding: 10px 20px;
+			background-color: #159957;
+			background-image: -webkit-linear-gradient(30deg, #155799, #159957);
+			background-image: -o-linear-gradient(30deg, #155799, #159957);
+			background-image: linear-gradient(120deg, #155799, #159957);
+			border-color: #fff3;
+			border-style: solid;
+			border-width: 1px;
+			border-radius: 0.3rem;
+			transition: background-image 0.2s;
+			text-decoration: none !important;
+			margin-bottom: 10px;
+		}
+
+		.btn:hover{
+			background-image: -webkit-linear-gradient(30deg, #155799, #5b9915);
+			background-image: -o-linear-gradient(30deg, #155799, #5b9915);
+			background-image: linear-gradient(120deg, #155799, #5b9915);
+		}
+
+		#description{
+			margin-top: 1em;
+		}
+
+		a{
+			color: #0085fc;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>treejs - Demo Page</h1>
+	</header>
+
+	<main>
+		<div id="container"></div>
+
+		<div id="options">
+			<a href="#" class="btn" onclick="n2.addChild(new TreeNode('' + count++)); view.reload();">Add new element</a>
+			<a href="#" class="btn" onclick="if(n2.isLeaf()) return; n2.removeChild(n2.getChildren()[n2.getChildCount()-1]); count--; view.reload();">Remove element</a>
+			<a href="#" class="btn" onclick="view.expandAllNodes(); view.reload();">Expand nodes</a>
+			<a href="#" class="btn" onclick="view.collapseAllNodes(); view.reload();">Collapse nodes</a>
+			<br>
+			<a href="#" class="btn" onclick="alert(view.getSelectedNodes().join('; '));">Show selected nodes</a>
+			<a href="#" class="btn" onclick="root.toggleSelected(); view.reload();">Toggle selected</a>
+			<a href="#" class="btn" onclick="n3.toggleEnabled(); view.reload();">Toggle enabled</a>
+			<br>
+			<a href="#" class="btn" onclick="changeIcons(this.innerHTML == 'Font-Awesome icons'); if(this.innerHTML == 'Font-Awesome icons') this.innerHTML = 'Default icons'; else this.innerHTML = 'Font-Awesome icons'">Font-Awesome icons</a>
+			<a href="#" class="btn" onclick="toggleCustomIcon(TreeUtil.getProperty(root.getOptions(), 'icon', true));">Change custom icon</a>
+		</div>
+
+		<div id="description">
+			All of the options used here are specified in the <a href="https://github.com/m-thalmann/treejs/blob/master/README.md" target="_blank">readme-File</a>.
+		</div>
+	</main>
+
+	<script>
+		var count = 1;
+
+		var root = new TreeNode("root");
+			var n1 = new TreeNode("1");
+				var n11 = new TreeNode("1.1");
+			var n2 = new TreeNode("2");
+			var n3 = new TreeNode("3");
+				var n31 = new TreeNode("3.1");
+				var n32 = new TreeNode("3.2");
+					var n321 = new TreeNode("3.2.1");
+				var n33 = new TreeNode("3.3");
+
+		root.addChild(n1);
+		root.addChild(n2);
+		root.addChild(n3);
+
+		n1.addChild(n11);
+
+		n3.addChild(n31);
+		n3.addChild(n32);
+		n3.addChild(n33);
+
+		n3.setEnabled(false);
+
+		n32.addChild(n321);
+
+		var view = new TreeView(root, "#container");
+	</script>
+</body>
+</html>
