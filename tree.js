@@ -112,34 +112,9 @@ function TreeView(root, container, options){
 		return options;
 	}
 
+	// TODO: set selected key: up down; expand right; collapse left; enter: open;
 	this.getSelectedNodes = function(){
-		return this.getSelectedNodesForNode(root);
-	}
-
-	this.getSelectedNodesForNode = function(node){
-		if(!(node instanceof TreeNode)){
-			throw new Error("Parameter 1 must be of type TreeNode");
-		}
-
-		var ret = new Array();
-
-		node.getChildren().forEach(function(child){
-			if(child.isLeaf()){
-				if(child.isSelected()){
-					ret.push(child);
-				}
-			}else{
-				if(child.isSelected()){
-					ret.push(child);
-				}
-
-				self.getSelectedNodesForNode(child).forEach(function(node){
-					ret.push(node);
-				});
-			}
-		});
-
-		return ret;
+		return TreeUtil.getSelectedNodesForNode(root);
 	}
 
 	this.reload = function(){
@@ -186,14 +161,33 @@ function TreeView(root, container, options){
 			}
 
 			if(node_cur.isEnabled()){
-				if(!node_cur.isLeaf()){
-					node_cur.toggleExpanded();
-					self.reload();
-				}else{
-					node_cur.open();
+				if(e.ctrlKey == false){
+					if(!node_cur.isLeaf()){
+						node_cur.toggleExpanded();
+						self.reload();
+					}else{
+						node_cur.open();
+					}
+
+					node_cur.on("click")(e, node_cur);
 				}
 
-				node_cur.on("click")(e, node_cur);
+
+				if(e.ctrlKey == true){
+					node_cur.toggleSelected();
+					self.reload();
+				}else{
+					var rt = node_cur.getRoot();
+
+					if(rt instanceof TreeNode){
+						TreeUtil.getSelectedNodesForNode(rt).forEach(function(_nd){
+							_nd.setSelected(false);
+						});
+					}
+					node_cur.setSelected(true);
+
+					self.reload();
+				}
 			}
 		});
 
@@ -269,7 +263,8 @@ function TreeView(root, container, options){
 		return li_outer;
 	}
 
-	this.reload();
+	if(typeof container !== "undefined")
+		this.reload();
 }
 
 function TreeNode(userObject, options){
@@ -356,6 +351,16 @@ function TreeNode(userObject, options){
 		}
 
 		return -1;
+	}
+
+	this.getRoot = function(){
+		var node = this;
+
+		while(typeof node.parent !== "undefined"){
+			node = node.parent;
+		}
+
+		return node;
 	}
 
 	this.setUserObject = function(_userObject){
@@ -489,7 +494,9 @@ function TreeNode(userObject, options){
 	}
 
 	this.open = function(){
-		this.on("open")(this);
+		if(!this.isLeaf()){
+			this.on("open")(this);
+		}
 	}
 
 	this.on = function(ev, callback){
@@ -559,17 +566,7 @@ function TreePath(root, node){
 	}
 
 	this.toString = function(){
-		var ret = "";
-
-		for(var i = 0; i < nodes.length-1; i++){
-			ret += nodes[i].toString() + " - ";
-		}
-
-		if(nodes.length > 0){
-			ret += nodes[nodes.length -1].toString();
-		}
-
-		return ret;
+		return nodes.join(" - ");
 	}
 
 	if(root instanceof TreeNode && node instanceof TreeNode){
@@ -623,6 +620,36 @@ const TreeUtil = {
 				TreeUtil.collapseNode(child);
 			});
 		}
+	},
+
+	getSelectedNodesForNode: function(node){
+		if(!(node instanceof TreeNode)){
+			throw new Error("Parameter 1 must be of type TreeNode");
+		}
+
+		var ret = new Array();
+
+		if(node.isSelected()){
+			ret.push(node);
+		}
+
+		node.getChildren().forEach(function(child){
+			if(child.isSelected()){
+				if(ret.indexOf(child) == -1){
+					ret.push(child);
+				}
+			}
+
+			if(!child.isLeaf()){
+				TreeUtil.getSelectedNodesForNode(child).forEach(function(_node){
+					if(ret.indexOf(_node) == -1){
+						ret.push(_node);
+					}
+				});
+			}
+		});
+
+		return ret;
 	}
 };
 

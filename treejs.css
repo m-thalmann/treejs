@@ -51,3 +51,12 @@
 	cursor: default;
 	background-color: inherit;
 }
+
+.tj_container span.tj_description.selected{
+	background-color: #2b2b2b;
+	color: #fff;
+}
+
+.tj_container span.tj_description.selected:hover{
+	background-color: #606060;
+}
