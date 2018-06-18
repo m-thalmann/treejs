@@ -14,6 +14,7 @@ Demo: https://m-thalmann.github.io/treejs/
   - [TreePath](#treepath)
   - [TreeUtil](#treeutil)
   - [TreeConfig](#treeconfig)
+  - [Events](#events)
   - [Options](#options)
 - [Examples](#examples)
 
@@ -58,7 +59,7 @@ new TreeView(root, container, options);
 ```
 - **root** (TreeNode): The root-node of the tree.
 - **container** (DOM-Element/querySelector): The container for the tree to display **(optional)**
-- **options** (object): A object with options for the tree **(optional)**
+- **options** (object): A object with options for the tree (see [below](#options)) **(optional)**
 
 After the instanciation, the TreeView is reloaded/rendered
 
@@ -100,6 +101,8 @@ node.removeChild(node);              // Removes the child from the current node,
 node.getChildren();                  // Returns a array with the children of the current node
 node.getChildCount();                // Returns the number of children
 node.getIndexOfChild(node);          // Returns the position of the child; -1 is returned if not found (TreeNode)
+
+node.getRoot();                      // Tries to get the root node of this node
 
 node.setUserObject(userobject);      // Resets the userobject (object)
 node.getUserObject();                // Returns the userobject
@@ -203,5 +206,21 @@ It is possible to attach a event to a TreeNode: ``node.on(event, callback);``
 | contextmenu | e[contextmenu_event], node[TreeNode] | Is triggered when a contextmenu is opened on a node | - |
 
 ### Options
+#### for TreeView
+
+| Option | Values | Definition |
+|-------------|----------|-----------------------------------------------------------------------------|
+| leaf_icon | [string] | Sets the leaf-icon for this tree to the string (can be overwritten by node) |
+| parent_icon | [string] | Sets the node-icon for this tree to the string (can be overwritten by node) |
+
+#### for TreeNode
+
+| Option | Values | Definition |
+|----------------|------------|----------------------------------------------------------------|
+| expanded | true/false | On creation, the node will have the expanded value set to this |
+| enabled | true/false | On creation, the node will have the enabled value set to this |
+| selected | true/false | On creation, the node will have the selected value set to this |
+| icon | [string] | Sets the icon for this node to the string |
+| allowsChildren | true/false | Sets if there can be added new children to this node |
 
 ## Examples
