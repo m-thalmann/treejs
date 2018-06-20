@@ -20,14 +20,17 @@ Demo: https://m.thalmann.bz.it/prod/treejs/demo.html
 
 ## Installation
 1. Download the .zip-File and put it in your project-folder.
+
 2. Add this script-tag to the head of the file
 ```html
 <script src="path/to/js/file.js"></script>
 ```
+
 3. Add this link-tag to the head of the file, to include the styles
 ```html
 <link rel="stylesheet" href="path/to/css/file.css" />
 ```
+
 4. Start using the library!
 
 ## Usage
