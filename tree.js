@@ -281,7 +281,7 @@ function TreeNode(userObject, options){
 	* Konstruktor
 	*/
 	if(userObject){
-		if(!(typeof userObject === "string") || typeof userObject.toString !== "function"){
+		if(typeof userObject !== "string" && typeof userObject.toString !== "function"){
 			throw new Error("Parameter 1 must be of type String or Object, where it must have the function toString()");
 		}
 	}else{
