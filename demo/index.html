@@ -126,6 +126,7 @@
 			<a href="#" class="btn" onclick="if(n2.isLeaf()) return; n2.removeChild(n2.getChildren()[n2.getChildCount()-1]); count--; view.reload();">Remove element</a>
 			<a href="#" class="btn" onclick="view.expandAllNodes(); view.reload();">Expand nodes</a>
 			<a href="#" class="btn" onclick="view.collapseAllNodes(); view.reload();">Collapse nodes</a>
+			<a href="#" class="btn" onclick="view.changeOption('show_root', !TreeUtil.getProperty(view.getOptions(), 'show_root', true)); view.reload();">Toggle show root</a>
 			<br>
 			<a href="#" class="btn" onclick="alert(view.getSelectedNodes().join('; '));">Show selected nodes</a>
 			<a href="#" class="btn" onclick="root.toggleSelected(); view.reload();">Toggle selected</a>

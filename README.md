@@ -215,6 +215,7 @@ It is possible to attach a event to a TreeNode: ``node.on(event, callback);``
 |-------------|----------|-----------------------------------------------------------------------------|
 | leaf_icon | [string] | Sets the leaf-icon for this tree to the string (can be overwritten by node) |
 | parent_icon | [string] | Sets the node-icon for this tree to the string (can be overwritten by node) |
+| show_root | [boolean] | Sets whether the root node is shown or not |
 
 #### for TreeNode
 
