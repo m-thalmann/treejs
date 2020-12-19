@@ -221,11 +221,12 @@ It is possible to attach a event to a TreeNode: ``node.on(event, callback);``
 
 | Option | Values | Definition |
 |----------------|------------|----------------------------------------------------------------|
-| expanded | true/false | On creation, the node will have the expanded value set to this |
-| enabled | true/false | On creation, the node will have the enabled value set to this |
-| selected | true/false | On creation, the node will have the selected value set to this |
+| expanded | [boolean] | On creation, the node will have the expanded value set to this |
+| enabled | [boolean] | On creation, the node will have the enabled value set to this |
+| selected | [boolean] | On creation, the node will have the selected value set to this |
 | icon | [string] | Sets the icon for this node to the string |
-| allowsChildren | true/false | Sets if there can be added new children to this node |
+| allowsChildren | [boolean] | Sets if there can be added new children to this node |
+| forceParent | [boolean] | This node will be displayed as parent, even if it is empty |
 
 ## Example
 ### Code:

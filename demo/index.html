@@ -131,6 +131,7 @@
 			<a href="#" class="btn" onclick="alert(view.getSelectedNodes().join('; '));">Show selected nodes</a>
 			<a href="#" class="btn" onclick="root.toggleSelected(); view.reload();">Toggle selected</a>
 			<a href="#" class="btn" onclick="n3.toggleEnabled(); view.reload();">Toggle enabled</a>
+			<a href="#" class="btn" onclick="n11.changeOption('forceParent', !TreeUtil.getProperty(n11.getOptions(), 'forceParent', false)); view.reload();">Toggle force parent</a>
 			<br>
 			<a href="#" class="btn" onclick="changeIcons(this.innerHTML == 'Font-Awesome icons'); if(this.innerHTML == 'Font-Awesome icons') this.innerHTML = 'Default icons'; else this.innerHTML = 'Font-Awesome icons'">Font-Awesome icons</a>
 			<a href="#" class="btn" onclick="toggleCustomIcon(TreeUtil.getProperty(root.getOptions(), 'icon', true));">Change custom icon</a>

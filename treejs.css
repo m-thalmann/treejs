@@ -24,6 +24,8 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+
+	text-align: left;
 }
 
 .tj_container li span.tj_description:hover{

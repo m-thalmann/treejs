@@ -221,7 +221,7 @@ function TreeView(root, container, options){
 			}
 		});
 
-		if(node.isLeaf()){
+		if(node.isLeaf() && !TreeUtil.getProperty(node.getOptions(), "forceParent", false)){
 			var ret = '';
 			var icon = TreeUtil.getProperty(node.getOptions(), "icon", "");
 			if(icon != ""){
