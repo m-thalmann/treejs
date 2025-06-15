@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate changelog
+        run: |
+          npm i -g conventional-changelog-cli@^3.0.0
+          conventional-changelog -p angular -o CHANGELOG.md -r 2
+          tail -n +2 CHANGELOG.md > CHANGELOG #remove first line
+          sed -i -e '/./,$!d' -e :a -e '/^\n*$/{$d;N;ba' -e '}' CHANGELOG #trim empty lines
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          cd dist
+          zip -r ../release.zip *
+
+      - name: Release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: TreeJS ${{ env.RELEASE_VERSION }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          body_path: CHANGELOG
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release.zip
+          asset_name: TreeJS-${{ env.RELEASE_VERSION }}.zip
+          asset_content_type: application/zip
