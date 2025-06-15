@@ -21,7 +21,7 @@ It implements partially the Java Swing TreeModel etc.
 
 ## Installation
 
-1. Download the .zip-File and put it in your project-folder.
+1. Download the .zip-File of the release and extract it into your project-folder.
 
 2. Add this script-tag to the head of the file
 
@@ -70,7 +70,7 @@ tree.reload(); // Always use this, when you change the TreeView or any of its no
 
 It's the main object to display the Tree.
 
-#### Instanciating
+#### Instantiating
 
 ```javascript
 new TreeView(root, container, options);
@@ -80,7 +80,7 @@ new TreeView(root, container, options);
 - **container** (DOM-Element/querySelector): The container for the tree to display **(optional)**
 - **options** (object): A object with options for the tree (see [below](#options)) **(optional)**
 
-After the instanciation, the TreeView is reloaded/rendered
+After the instantiation, the TreeView is reloaded/rendered
 
 #### Methods
 
@@ -99,6 +99,7 @@ tree.setOptions(options); // Resets the options (object)
 tree.changeOption(option, value); // Changes one option (string, object)
 tree.getOptions(); // Returns the options
 
+tree.getSelectedNodesForNode(n); // Returns all selected nodes inside of this node (and itself, if its selected) (TreeNode)
 tree.getSelectedNodes(); // Returns all selected nodes in the tree
 tree.reload(); // Reloads/Renders the tree inside of the container
 ```
@@ -107,7 +108,7 @@ tree.reload(); // Reloads/Renders the tree inside of the container
 
 It represents a node inside of a tree. You can append children to it and specify a userobject, which is used to display text on a node. This object can be a string but can also be a other object, where the toString() function is used to display the text.
 
-#### Instanciating
+#### Instantiating
 
 ```javascript
 new TreeNode(userobject, options);
@@ -151,7 +152,7 @@ node.isSelected(); // Returns, if the node is selected or not
 
 node.open(); // Triggers the "open"-event of the node
 
-node.on(event, callback); // Sets the eventlistener of the event, if the callback is specified;
+node.on(event, callback); // Sets the event listener of the event, if the callback is specified;
 // if only the event is set, it returns the callback-function; if that is not
 // set, it returns a empty function (string, function)
 node.getListener(event); // Returns the callback-function for this event, if set (string)
@@ -165,7 +166,7 @@ node.toString(); // Returns the generated string from the userobject
 
 It represents a path inside of a tree (containing all nodes that form the path).
 
-#### Instanciating
+#### Instantiating
 
 ```javascript
 new TreePath(root, node);
@@ -184,7 +185,7 @@ path.toString(); // Returns the path as a string (nodes joined with a ' - ')
 
 ### TreeUtil
 
-A collection of default values and methods. Can't be instanciated.
+A collection of default values and methods. Can't be instantiated.
 
 #### Variables
 
@@ -204,9 +205,6 @@ TreeUtil.getProperty(opt, o, def); // Returns the value of 'o' in the array/obje
 // else it returns def (object, string, object)
 TreeUtil.expandNode(node); // Expands the node and all it's children and theirs etc. (TreeNode)
 TreeUtil.collapseNode(node); // Collapses the node and all it's children and theirs etc. (TreeNode)
-
-TreeUtil.getSelectedNodesForNode(n); // Returns all selected nodes inside of this node (and it's self,
-// if its selected) (TreeNode)
 ```
 
 ### TreeConfig
@@ -268,15 +266,15 @@ It is possible to attach a event to a TreeNode: `node.on(event, callback);`
 ### Code:
 
 ```javascript
-var root = new TreeNode('root');
-var n1 = new TreeNode('1');
-var n11 = new TreeNode('1.1');
-var n2 = new TreeNode('2');
-var n3 = new TreeNode('3');
-var n31 = new TreeNode('3.1');
-var n32 = new TreeNode('3.2');
-var n321 = new TreeNode('3.2.1');
-var n33 = new TreeNode('3.3');
+const root = new TreeNode('root');
+const n1 = new TreeNode('1');
+const n11 = new TreeNode('1.1');
+const n2 = new TreeNode('2');
+const n3 = new TreeNode('3');
+const n31 = new TreeNode('3.1');
+const n32 = new TreeNode('3.2');
+const n321 = new TreeNode('3.2.1');
+const n33 = new TreeNode('3.3');
 
 root.addChild(n1);
 root.addChild(n2);
@@ -292,7 +290,7 @@ n32.addChild(n321);
 
 n3.setEnabled(false);
 
-var view = new TreeView(root, '#container');
+const view = new TreeView(root, '#container');
 ```
 
 ### Output:

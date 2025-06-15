@@ -6,14 +6,14 @@ const prettierConfig = require('eslint-config-prettier');
 
 module.exports = [
   {
-    ignores: ['dist/', 'tree.js'], // TODO: remove tree.js after migrating to builds
+    ignores: ['dist/'],
   },
 
   {
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
-        ...globals.node,
+        ...globals.browser,
       },
     },
     linterOptions: {
@@ -23,4 +23,18 @@ module.exports = [
 
   ...baseConfig,
   prettierConfig,
+
+  {
+    rules: {
+      'no-console': 'off',
+    },
+  },
+
+  {
+    files: ['src/tree.js'],
+    rules: {
+      'max-lines': 'off',
+      camelcase: 'off',
+    },
+  },
 ];

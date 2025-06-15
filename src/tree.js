@@ -3,12 +3,74 @@
  * on the web.
  *
  * @author Matthias Thalmann
+ * @copyright Matthias Thalmann
  */
 
-function TreeNode(userObject, options) {
+/*
+ * Util-Methods
+ */
+const TreeUtil = {
+  default_leaf_icon: '<span>&#128441;</span>',
+  default_parent_icon: '<span>&#128449;</span>',
+  default_open_icon: '<span>&#9698;</span>',
+  default_close_icon: '<span>&#9654;</span>',
+
+  isDOM(obj) {
+    try {
+      return obj instanceof HTMLElement;
+    } catch {
+      return (
+        typeof obj === 'object' &&
+        obj.nodeType === 1 &&
+        typeof obj.style === 'object' &&
+        typeof obj.ownerDocument === 'object'
+      );
+    }
+  },
+
+  getProperty(options, opt, def) {
+    if (typeof options[opt] === 'undefined') {
+      return def;
+    }
+
+    return options[opt];
+  },
+
+  expandNode(node) {
+    node.setExpanded(true);
+
+    if (!node.isLeaf()) {
+      node.getChildren().forEach((child) => {
+        TreeUtil.expandNode(child);
+      });
+    }
+  },
+
+  collapseNode(node) {
+    node.setExpanded(false);
+
+    if (!node.isLeaf()) {
+      node.getChildren().forEach((child) => {
+        TreeUtil.collapseNode(child);
+      });
+    }
+  },
+};
+
+const TreeConfig = {
+  leaf_icon: TreeUtil.default_leaf_icon,
+  parent_icon: TreeUtil.default_parent_icon,
+  open_icon: TreeUtil.default_open_icon,
+  close_icon: TreeUtil.default_close_icon,
+  context_menu: undefined,
+};
+
+function TreeNode(nodeUserObject, nodeOptions) {
   const children = new Array();
-  const self = this;
   const events = new Array();
+
+  let userObject = nodeUserObject;
+  let options = nodeOptions;
 
   let expanded = true;
   let enabled = true;
@@ -128,7 +190,7 @@ function TreeNode(userObject, options) {
   };
 
   this.isLeaf = function () {
-    return children.length == 0;
+    return children.length === 0;
   };
 
   this.setExpanded = function (_expanded) {
@@ -137,7 +199,7 @@ function TreeNode(userObject, options) {
     }
 
     if (typeof _expanded === 'boolean') {
-      if (expanded == _expanded) {
+      if (expanded === _expanded) {
         return;
       }
 
@@ -170,7 +232,7 @@ function TreeNode(userObject, options) {
 
   this.setEnabled = function (_enabled) {
     if (typeof _enabled === 'boolean') {
-      if (enabled == _enabled) {
+      if (enabled === _enabled) {
         return;
       }
 
@@ -203,7 +265,7 @@ function TreeNode(userObject, options) {
       return;
     }
 
-    if (selected == _selected) {
+    if (selected === _selected) {
       return;
     }
 
@@ -236,10 +298,13 @@ function TreeNode(userObject, options) {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   this.on = function (ev, callback) {
     if (typeof callback === 'undefined') {
       if (typeof events[ev] !== 'function') {
-        return function () {};
+        return function () {
+          /* noop function */
+        };
       }
       return events[ev];
     }
@@ -257,7 +322,7 @@ function TreeNode(userObject, options) {
 
   this.equals = function (node) {
     if (node instanceof TreeNode) {
-      if (node.getUserObject() == userObject) {
+      if (node.getUserObject() === userObject) {
         return true;
       }
     }
@@ -273,8 +338,51 @@ function TreeNode(userObject, options) {
   };
 }
 
-function TreeView(root, container, options) {
+function TreePath(root, node) {
+  let nodes = new Array();
+
+  this.setPath = function (pathRoot, pathNode) {
+    nodes = new Array();
+
+    let _pathNode = pathNode;
+
+    while (typeof _pathNode !== 'undefined' && !_pathNode.equals(pathRoot)) {
+      nodes.push(_pathNode);
+      _pathNode = _pathNode.parent;
+    }
+
+    if (_pathNode.equals(pathRoot)) {
+      nodes.push(pathRoot);
+    } else {
+      nodes = new Array();
+      throw new Error('Node is not contained in the tree of root');
+    }
+
+    nodes = nodes.reverse();
+
+    return nodes;
+  };
+
+  this.getPath = function () {
+    return nodes;
+  };
+
+  this.toString = function () {
+    return nodes.join(' - ');
+  };
+
+  if (root instanceof TreeNode && node instanceof TreeNode) {
+    this.setPath(root, node);
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+function TreeView(treeRoot, treeContainer, treeOptions) {
   const self = this;
+
+  let root = treeRoot;
+  let container = treeContainer;
+  let options = treeOptions;
 
   /*
    * Konstruktor
@@ -350,15 +458,17 @@ function TreeView(root, container, options) {
     if (TreeUtil.isDOM(_container)) {
       container = _container;
     } else {
-      _container = document.querySelector(_container);
+      let queriedContainer = document.querySelector(_container);
 
-      if (_container instanceof Array) {
-        _container = _container[0];
+      if (queriedContainer instanceof Array) {
+        queriedContainer = queriedContainer[0];
       }
 
-      if (!TreeUtil.isDOM(_container)) {
+      if (!TreeUtil.isDOM(queriedContainer)) {
         throw new Error('Parameter 1 must be either DOM-Object or CSS-QuerySelector (#, .)');
       }
+
+      container = queriedContainer;
     }
   };
 
@@ -380,31 +490,39 @@ function TreeView(root, container, options) {
     return options;
   };
 
-  // TODO: set selected key: up down; expand right; collapse left; enter: open;
-  this.getSelectedNodes = function () {
-    return TreeUtil.getSelectedNodesForNode(root);
+  this.getSelectedNodesForNode = function (node) {
+    if (!(node instanceof TreeNode)) {
+      throw new Error('Parameter 1 must be of type TreeNode');
+    }
+
+    const ret = new Array();
+
+    if (node.isSelected()) {
+      ret.push(node);
+    }
+
+    node.getChildren().forEach((child) => {
+      if (child.isSelected()) {
+        if (ret.indexOf(child) === -1) {
+          ret.push(child);
+        }
+      }
+
+      if (!child.isLeaf()) {
+        self.getSelectedNodesForNode(child).forEach((_node) => {
+          if (ret.indexOf(_node) === -1) {
+            ret.push(_node);
+          }
+        });
+      }
+    });
+
+    return ret;
   };
 
-  this.reload = function () {
-    if (container == null) {
-      console.warn('No container specified');
-      return;
-    }
-
-    container.classList.add('tj_container');
-
-    const cnt = document.createElement('ul');
-
-    if (TreeUtil.getProperty(options, 'show_root', true)) {
-      cnt.appendChild(renderNode(root));
-    } else {
-      root.getChildren().forEach((child) => {
-        cnt.appendChild(renderNode(child));
-      });
-    }
-
-    container.innerHTML = '';
-    container.appendChild(cnt);
+  // TODO: set selected key: up down; expand right; collapse left; enter: open;
+  this.getSelectedNodes = function () {
+    return self.getSelectedNodesForNode(root);
   };
 
   function renderNode(node) {
@@ -437,25 +555,25 @@ function TreeView(root, container, options) {
       }
 
       if (node_cur.isEnabled()) {
-        if (e.ctrlKey == false) {
-          if (!node_cur.isLeaf()) {
+        if (e.ctrlKey === false) {
+          if (node_cur.isLeaf()) {
+            node_cur.open();
+          } else {
             node_cur.toggleExpanded();
             self.reload();
-          } else {
-            node_cur.open();
           }
 
           node_cur.on('click')(e, node_cur);
         }
 
-        if (e.ctrlKey == true) {
+        if (e.ctrlKey === true) {
           node_cur.toggleSelected();
           self.reload();
         } else {
           const rt = node_cur.getRoot();
 
           if (rt instanceof TreeNode) {
-            TreeUtil.getSelectedNodesForNode(rt).forEach((_nd) => {
+            self.getSelectedNodesForNode(rt).forEach((_nd) => {
               _nd.setSelected(false);
             });
           }
@@ -489,14 +607,14 @@ function TreeView(root, container, options) {
     });
 
     if (node.isLeaf() && !TreeUtil.getProperty(node.getOptions(), 'forceParent', false)) {
-      var ret = '';
-      var icon = TreeUtil.getProperty(node.getOptions(), 'icon', '');
-      if (icon != '') {
+      let ret = '';
+      let icon = TreeUtil.getProperty(node.getOptions(), 'icon', '');
+      if (icon !== '') {
         ret += `<span class="tj_icon">${icon}</span>`;
-      } else if ((icon = TreeUtil.getProperty(options, 'leaf_icon', '')) != '') {
-        ret += `<span class="tj_icon">${icon}</span>`;
-      } else {
+      } else if ((icon = TreeUtil.getProperty(options, 'leaf_icon', '')) === '') {
         ret += `<span class="tj_icon">${TreeConfig.leaf_icon}</span>`;
+      } else {
+        ret += `<span class="tj_icon">${icon}</span>`;
       }
 
       span_desc.innerHTML = `${ret + node.toString()}</span>`;
@@ -504,20 +622,20 @@ function TreeView(root, container, options) {
 
       li_outer.appendChild(span_desc);
     } else {
-      var ret = '';
+      let ret = '';
       if (node.isExpanded()) {
         ret += `<span class="tj_mod_icon">${TreeConfig.open_icon}</span>`;
       } else {
         ret += `<span class="tj_mod_icon">${TreeConfig.close_icon}</span>`;
       }
 
-      var icon = TreeUtil.getProperty(node.getOptions(), 'icon', '');
-      if (icon != '') {
+      let icon = TreeUtil.getProperty(node.getOptions(), 'icon', '');
+      if (icon !== '') {
         ret += `<span class="tj_icon">${icon}</span>`;
-      } else if ((icon = TreeUtil.getProperty(options, 'parent_icon', '')) != '') {
-        ret += `<span class="tj_icon">${icon}</span>`;
-      } else {
+      } else if ((icon = TreeUtil.getProperty(options, 'parent_icon', '')) === '') {
         ret += `<span class="tj_icon">${TreeConfig.parent_icon}</span>`;
+      } else {
+        ret += `<span class="tj_icon">${icon}</span>`;
       }
 
       span_desc.innerHTML = `${ret + node.toString()}</span>`;
@@ -538,130 +656,27 @@ function TreeView(root, container, options) {
     return li_outer;
   }
 
+  this.reload = function () {
+    if (container === null) {
+      console.warn('No container specified');
+      return;
+    }
+
+    container.classList.add('tj_container');
+
+    const cnt = document.createElement('ul');
+
+    if (TreeUtil.getProperty(options, 'show_root', true)) {
+      cnt.appendChild(renderNode(root));
+    } else {
+      root.getChildren().forEach((child) => {
+        cnt.appendChild(renderNode(child));
+      });
+    }
+
+    container.innerHTML = '';
+    container.appendChild(cnt);
+  };
+
   if (typeof container !== 'undefined') this.reload();
 }
-
-function TreePath(root, node) {
-  let nodes = new Array();
-
-  this.setPath = function (root, node) {
-    nodes = new Array();
-
-    while (typeof node !== 'undefined' && !node.equals(root)) {
-      nodes.push(node);
-      node = node.parent;
-    }
-
-    if (node.equals(root)) {
-      nodes.push(root);
-    } else {
-      nodes = new Array();
-      throw new Error('Node is not contained in the tree of root');
-    }
-
-    nodes = nodes.reverse();
-
-    return nodes;
-  };
-
-  this.getPath = function () {
-    return nodes;
-  };
-
-  this.toString = function () {
-    return nodes.join(' - ');
-  };
-
-  if (root instanceof TreeNode && node instanceof TreeNode) {
-    this.setPath(root, node);
-  }
-}
-
-/*
- * Util-Methods
- */
-const TreeUtil = {
-  default_leaf_icon: '<span>&#128441;</span>',
-  default_parent_icon: '<span>&#128449;</span>',
-  default_open_icon: '<span>&#9698;</span>',
-  default_close_icon: '<span>&#9654;</span>',
-
-  isDOM(obj) {
-    try {
-      return obj instanceof HTMLElement;
-    } catch (e) {
-      return (
-        typeof obj === 'object' &&
-        obj.nodeType === 1 &&
-        typeof obj.style === 'object' &&
-        typeof obj.ownerDocument === 'object'
-      );
-    }
-  },
-
-  getProperty(options, opt, def) {
-    if (typeof options[opt] === 'undefined') {
-      return def;
-    }
-
-    return options[opt];
-  },
-
-  expandNode(node) {
-    node.setExpanded(true);
-
-    if (!node.isLeaf()) {
-      node.getChildren().forEach((child) => {
-        TreeUtil.expandNode(child);
-      });
-    }
-  },
-
-  collapseNode(node) {
-    node.setExpanded(false);
-
-    if (!node.isLeaf()) {
-      node.getChildren().forEach((child) => {
-        TreeUtil.collapseNode(child);
-      });
-    }
-  },
-
-  getSelectedNodesForNode(node) {
-    if (!(node instanceof TreeNode)) {
-      throw new Error('Parameter 1 must be of type TreeNode');
-    }
-
-    const ret = new Array();
-
-    if (node.isSelected()) {
-      ret.push(node);
-    }
-
-    node.getChildren().forEach((child) => {
-      if (child.isSelected()) {
-        if (ret.indexOf(child) == -1) {
-          ret.push(child);
-        }
-      }
-
-      if (!child.isLeaf()) {
-        TreeUtil.getSelectedNodesForNode(child).forEach((_node) => {
-          if (ret.indexOf(_node) == -1) {
-            ret.push(_node);
-          }
-        });
-      }
-    });
-
-    return ret;
-  },
-};
-
-var TreeConfig = {
-  leaf_icon: TreeUtil.default_leaf_icon,
-  parent_icon: TreeUtil.default_parent_icon,
-  open_icon: TreeUtil.default_open_icon,
-  close_icon: TreeUtil.default_close_icon,
-  context_menu: undefined,
-};
