@@ -1,0 +1,27 @@
+{
+  "name": "treejs",
+  "description": "A simple JavaScript library, to display a TreeView like in the windows filebrowser",
+  "author": "Matthias Thalmann",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*": [
+      "eslint --max-warnings=0 --no-warn-ignored",
+      "prettier --ignore-unknown --write"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@m-thalmann/eslint-config-base": "^0.2.0",
+    "@m-thalmann/prettier-config": "^1.0.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.1",
+    "prettier": "^3.5.3"
+  }
+}
